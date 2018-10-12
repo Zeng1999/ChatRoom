@@ -1,57 +1,37 @@
 "use strict";
 
-const Service = require("egg").Service;
-const connection = require("mysql").createConnection({
-    host: "192.168.0.111",
-    user: "foo",
-    password: "123456",
-    port: 8806,
-    database: "ChatRoom"
-});
+var connection;
 
-connection.connect();
+const Service = require("egg").Service;
 
 class MysqlService extends Service {
     async AddUser(n, p) {
-        var ins = `INSERT INTO user (name, password) VALUES ('${n}', '${p}')`;
-        connection.query(ins, function(err) {
-            if(err) {
-                console.log(err.message);
-                throw err;
-            }
+        const res = await this.app.mysql.insert("user", {
+            name: n,
+            password: p
         });
+        return res.affectedRows === 1;
     }
 
     async DeleteUser(n) {
-        var del = `DELETE FROM user WHERE name='${n}'`;
-        connection.query(del, function(err) {
-            if(err) {
-                console.log(err.message);
-                throw err;
-            }
+        const res = await this.app.mysql.delete("user", {
+            name: n
         });
+        return res.affectedRows === 1;
     }
 
-    async CheckExists(n, callback) {
-        var sel = `SELECT * FROM user WHERE name='${n}'`;
-        connection.query(sel, function(err, res) {
-            if(err) {
-                console.log(err.message);
-                throw err;
-            }
-            callback(res.length);
+    async CheckExists(n) {
+        const x = await this.app.mysql.get("user", {
+            name: n
         });
+        return x !== null;
     }
 
-    async CheckPassword(n, callback) {
-        var sel = `SELECT * FROM user WHERE name='${n}'`;
-        connection.query(sel, function(err, res) {
-            if(err) {
-                console.log(err.message);
-                throw err;
-            }
-            callback(res[0].password);
+    async CheckPassword(n, p) {
+        const u = await this.app.mysql.get("user", {
+            name: n
         });
+        return u === null ? false : u.password === p;
     }
 }
 
