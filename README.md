@@ -1,4 +1,5 @@
 # ChatRoom
-a online chatroom
+A local area network chatroom
 
-Just a server , client is developing ...
+The server is based on Node.js
+The client is based on Vue
