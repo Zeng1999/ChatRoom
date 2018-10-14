@@ -8,5 +8,5 @@ module.exports = app =>  {
     router.post("/signup", controller.sign.signUp);
 
     //socket.io
-    io.of("/").route("send", io.controller.home.foo);
+    io.of("/").route("send", io.controller.home.message);
 };

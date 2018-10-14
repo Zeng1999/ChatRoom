@@ -8,8 +8,5 @@ Vue.use(VueSocketio, "http://192.168.0.111:7001");
 Vue.prototype.$axios = Axios;
 
 new Vue({
-  render: h => h(App),
-  data: {
-    m: "Hello"
-  }
+  render: h => h(App)
 }).$mount('#app');

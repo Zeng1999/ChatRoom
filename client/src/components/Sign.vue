@@ -1,13 +1,13 @@
 <template>
     <div class="box">
         <message-box :login="login" :username="room.username" :items="message"></message-box><br>
-        <div v-if="login != 'true'">
+        <div v-if="!login">
             Username:<input type="text" v-model="input.name"/><br>
             Password:<input type="password" v-model="input.pass"/><br>
             <input type="submit" value="Sign up" @click="signup" /> or 
             <input type="submit" value="Sign in" @click="signin" />
         </div>
-        <div v-if="login == 'true'">
+        <div v-if="login">
         <div>
             <p>Current user : {{ room.username }}</p>
             <p>Number of people online : {{ room.onlineCount }}</p>
@@ -21,9 +21,6 @@ import MessageBox from "./MessageBox.vue";
 
 export default {
     name: "sign",
-    props: {
-        login: String
-    },
     components: {
         MessageBox
     },
@@ -59,17 +56,14 @@ export default {
             });
             console.log(res.data.Message);
             if(res.data.Ok) {
-                this.login = "true";
+                this.login = true;
                 this.room.username = this.input.name;
                 var that = this;
                 this.$socket.on("receive", function(msg) {
                     if(that.message.length > 20) {
                         that.message = [];
                     }
-                    that.message.push({
-                        id: that.message.length,
-                        text: msg.name + " : " + msg.text
-                    });
+                    that.message.push(msg.name + " : " + msg.text);
                 });
                 this.$socket.on("important", function(msg) {
                     that.room.onlineCount = msg.onlineCount;
@@ -79,7 +73,7 @@ export default {
             }
         }
     },
-    data: () => {return {
+    data() {return {
         url: "http://192.168.0.111:7001",
         room: {
             id: 123,
@@ -90,9 +84,10 @@ export default {
             name: "",
             pass: ""
         },
-        message: [{
-            id: 0, text: "Send a message !"
-        }]
+        message: [
+            "Send a message !"
+        ],
+        login: false
     };}
 }
 </script>

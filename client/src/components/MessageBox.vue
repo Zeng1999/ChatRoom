@@ -1,9 +1,9 @@
 <template>
 <div class="box">
-    <div v-if="login == 'true'">
+    <div v-if="login">
     <div id="container">
     <div v-for="item in items" :key="item.id">
-        <p>{{ item.text }}</p>
+        <p>{{ item }}</p>
     </div></div>
     <input type="text" v-model="input.text" /><br>
     <input id="button" type="submit" value="Add Message !" @click="add"><br></div>
@@ -14,7 +14,7 @@
 export default {
     name: "message-box",
     props: {
-        login: String,
+        login: Boolean,
         username: String,
         items: Array
     },
@@ -29,7 +29,7 @@ export default {
             this.input.text = "";
         }
     },
-    data: () => {return {
+    data() {return {
         input: {
             text: ""
         }

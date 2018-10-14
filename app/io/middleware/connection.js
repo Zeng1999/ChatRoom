@@ -7,6 +7,9 @@ module.exports = app => {
         ctx.socket.broadcast.emit("important", {
             onlineCount: x
         });
+        ctx.socket.emit("important", {
+            onlineCount: x
+        });
         await next();
         x--;
         ctx.socket.broadcast.emit("important", {
